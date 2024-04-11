@@ -1,10 +1,11 @@
 "use client";
-import { Button, Callout, TextField } from '@radix-ui/themes'
+import { Button, Callout, Spinner, TextField } from '@radix-ui/themes'
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { useState } from 'react';
 import axios from "axios"
 import { useRouter } from 'next/navigation';
+
 
 const NewIssuePage = () => {
 
@@ -13,7 +14,8 @@ const NewIssuePage = () => {
     const [description,setDescription] = useState("");
 
     const [error,setError] = useState('');
-     
+    const [submitting,setSubmitting] = useState(false); 
+
     const issue = {
         title,
         description
@@ -21,15 +23,21 @@ const NewIssuePage = () => {
 
     async function handleSubmit() {
         try {
+            setSubmitting(true);
             await axios.post('/api/issues',issue);
             router.push('/issues');
+            setError('');
+            setTitle('');
+            setDescription('');
+
         } catch (error) {
-            setError('An unexpected error occured!')
+            setError('Title or Description cannot be empty!');
+            setSubmitting(false);
         }
     }
 
   return (
-        <>
+        <div className='flex justify-center items-center flex-col'>
             <div className='max-w-lg mb-5'>
                 {error && <Callout.Root color='red' >
                         <Callout.Text>
@@ -43,10 +51,13 @@ const NewIssuePage = () => {
                 
                 <SimpleMDE placeholder="Description"
                 onChange={(e)=>setDescription(e)}/>
-                <Button onClick={handleSubmit}
-                className='cursor-pointer'>Submit New Issue</Button>
+                <Button disabled={submitting}
+                 onClick={handleSubmit}
+                 className='cursor-pointer'>
+                    Submit New Issue {submitting && <Spinner/>} 
+                 </Button>
             </div>
-        </>
+        </div>
   )
 }
 
