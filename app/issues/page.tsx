@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios'; 
 import { useRouter } from 'next/navigation';
-import { Flex, Spinner } from "@radix-ui/themes"
+import { Flex, Spinner } from "@radix-ui/themes";
 
 
 const Issues = () => {
@@ -103,25 +103,25 @@ const Issues = () => {
             />
           </div>
 
-          <table className="table-auto w-full">
+          <table className="table-auto w-full border-collapse border">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Date</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Action</th>
+                <th className="px-4 py-2 bg-blue-900 text-white rounded-tl-lg">ID</th>
+                <th className="px-4 py-2 bg-blue-900 text-white">Title</th>
+                <th className="px-4 py-2 bg-blue-900 text-white">Date</th>
+                <th className="px-4 py-2 bg-blue-900 text-white">Description</th>
+                <th className="px-4 py-2 bg-blue-900 text-white">Status</th>
+                <th className="px-4 py-2 bg-blue-900 text-white rounded-tr-lg">Action</th>
               </tr>
             </thead>
             <tbody>
               {currentIssues.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map(issue => (
                 <tr key={issue.id}>
-                  <td>{issue.id}</td>
-                  <td>{new Date(issue.createdAt).toLocaleDateString()}</td>
-                  <td>{issue.title}</td>
-                  <td>{issue.description}</td>
-                  <td >
+                  <td className="px-4 py-2 border">{issue.id}</td>
+                  <td className="px-4 py-2 border">{new Date(issue.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-2 border">{issue.title}</td>
+                  <td className="px-4 py-2 border break-words">{issue.description}</td>
+                  <td className="px-4 py-2 border">
                     {editableIssueId === issue.id ? (
                       <select
                         value={issue.status}
@@ -133,10 +133,12 @@ const Issues = () => {
                         <option value="Closed">Closed</option>
                       </select>
                     ) : (
-                      issue.status
+                    <span className={`inline-block px-2 py-1 rounded-lg ${issue.status === 'OPEN' ? 'bg-red-400 text-white' : issue.status === 'IN_PROGRESS' ? 'bg-yellow-300 text-black' : 'bg-green-400 text-white'}`}>
+                        {issue.status}
+                    </span>
                     )}
                   </td>
-                  <td>
+                  <td className="px-4 py-2 border">
                     {editableIssueId === issue.id ? (
                       <button
                         onClick={() => setEditableIssueId(null)}
@@ -147,7 +149,7 @@ const Issues = () => {
                     ) : (
                       <button
                         onClick={() => setEditableIssueId(issue.id)}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md focus:outline-none"
+                        className="bg-blue-400 text-white px-4 w-28 py-2 rounded-md focus:outline-none"
                       >
                         Edit Status
                       </button>

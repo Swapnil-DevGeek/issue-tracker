@@ -22,7 +22,7 @@ const Navbar = () => {
     ]
 
   return (
-    <div className='flex space-x-6 border-b h-14 items-center px-6 mb-5'>
+    <div className='flex space-x-6 border-b h-14 items-center px-6 mb-2'>
       <Link href='/'> <AiFillBug/> </Link>
       <ul className='flex space-x-6'>
 
