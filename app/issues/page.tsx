@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Flex, Spinner } from "@radix-ui/themes";
 
-
 const Issues = () => {
   const router = useRouter();
   const [issues, setIssues] = useState([]);
@@ -13,7 +12,7 @@ const Issues = () => {
   const [startDateFilter, setStartDateFilter] = useState('');
   const [endDateFilter, setEndDateFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [issuesPerPage] = useState(10);
+  const [issuesPerPage] = useState(5);
   const [editableIssueId, setEditableIssueId] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
 
@@ -48,9 +47,21 @@ const Issues = () => {
     setFilteredIssues(filtered);
   }, [issues, statusFilter, startDateFilter, endDateFilter]);
 
-  const indexOfLastIssue = currentPage * issuesPerPage;
-  const indexOfFirstIssue = indexOfLastIssue - issuesPerPage;
-  const currentIssues = filteredIssues.slice(indexOfFirstIssue, indexOfLastIssue);
+const totalIssues = filteredIssues.length;
+const totalPages = Math.ceil(totalIssues / issuesPerPage);
+
+let indexOfFirstIssue = totalIssues - (currentPage * issuesPerPage);
+let indexOfLastIssue = indexOfFirstIssue + issuesPerPage;
+
+if (indexOfFirstIssue < 0) {
+  indexOfFirstIssue = 0;
+}
+if (indexOfLastIssue > totalIssues) {
+  indexOfLastIssue = totalIssues;
+}
+
+const currentIssues = filteredIssues.slice(indexOfFirstIssue, indexOfLastIssue).reverse();
+
 
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
@@ -115,7 +126,7 @@ const Issues = () => {
               </tr>
             </thead>
             <tbody>
-              {currentIssues.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map(issue => (
+              {currentIssues.map(issue => (
                 <tr key={issue.id}>
                   <td className="px-4 py-2 border">{issue.id}</td>
                   <td className="px-4 py-2 border">{new Date(issue.createdAt).toLocaleDateString()}</td>
